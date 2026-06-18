@@ -3,8 +3,8 @@
 
 import tensorflow as tf
 from config import GPTConfig
-from embedding import GPTEmbeddings
-from causal_Attention import MultiHeadAttention
+from GPT.layers.embedding import GPTEmbeddings
+from GPT.layers.causal_Attention import MultiHeadAttention
 config = GPTConfig()
 
 emb = GPTEmbeddings(config)

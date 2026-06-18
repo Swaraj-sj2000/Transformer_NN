@@ -1,7 +1,4 @@
-#!/bin/python
 #GPT/config.py
-# config.py
-
 
 from pydantic_settings import BaseSettings
 

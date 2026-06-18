@@ -1,5 +1,4 @@
-#!/bin/python
-#GPT/causal_Attention.py
+#GPT/layers/attention.py
 """
 =====================================================
 File: causal_attention.py

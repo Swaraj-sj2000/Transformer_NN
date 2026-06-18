@@ -1,10 +1,10 @@
-#!/bin/python
 #GPT/test.py
 
 import tensorflow as tf
 from config import GPTConfig
-from GPT.layers.embedding import GPTEmbeddings
-from GPT.layers.causal_Attention import MultiHeadAttention
+from layers.embedding import GPTEmbeddings
+from layers.attention import MultiHeadAttention
+from model.gpt import Decoder
 config = GPTConfig()
 
 emb = GPTEmbeddings(config)
@@ -25,3 +25,11 @@ attn = MultiHeadAttention(config)
 y = attn(x)
 
 print(y.shape)
+
+input_ids = tf.random.uniform((2, 16), maxval=50257, dtype=tf.int32)
+
+model = Decoder(config)
+
+logits = model(input_ids)
+
+print(logits.shape)

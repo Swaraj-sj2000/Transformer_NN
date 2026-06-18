@@ -1,5 +1,4 @@
-#!/bin/python
-#GPT/embedding.py
+#GPT/layers/embedding.py
 
 """
 =====================================================

@@ -62,6 +62,7 @@ class MultiHeadAttention(tf.keras.layers.Layer):
 
     def call(self,X):
         shape = tf.shape(X)
+        dtype = X.dtype
 
         batch_size = shape[0]
         seq_len = shape[1]
@@ -78,12 +79,12 @@ class MultiHeadAttention(tf.keras.layers.Layer):
 
         z_score=tf.matmul(Q_h,K_h,transpose_b=True)
 
-        scaled_z_score=z_score/tf.sqrt(tf.cast(d_k,tf.float32))
+        scaled_z_score=z_score/tf.sqrt(tf.cast(d_k,dtype))
 
-        mask = 1 - tf.linalg.band_part(tf.ones((seq_len, seq_len)),-1,0)
+        mask = tf.cast(1 - tf.linalg.band_part(tf.ones((seq_len, seq_len)),-1,0),dtype=dtype)
         causal_masked_score=scaled_z_score+mask[tf.newaxis,tf.newaxis,:,:]*(-1e9)
         
-        QK_logits=tf.nn.softmax(scaled_z_score+causal_masked_score,axis=-1)
+        QK_logits=tf.nn.softmax(causal_masked_score,axis=-1)
         attention_head_score=tf.matmul(QK_logits,V_h)
         attention_score=tf.reshape(tf.transpose(attention_head_score,perm=[0,2,1,3]),shape=(batch_size,seq_len,d_model))
         return self.WO(attention_score)

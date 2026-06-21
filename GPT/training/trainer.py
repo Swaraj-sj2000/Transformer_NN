@@ -8,7 +8,7 @@ from GPT.training.logger import TrainLogger
 from GPT.training.loss import GPTLoss
 from GPT.training.optimizer import build_optimizer
 from GPT.model.gpt import Decoder
-from GPT.tfrecords import get_dataset
+from GPT.data.build_dataset_pipeline import get_dataset
 
 config=GPTConfig()
 

@@ -3,18 +3,22 @@
 import tensorflow as tf
 import tqdm
 
-from config import GPTConfig
-from training.logger import TrainLogger
-from training.loss import loss_fn
-from training.optimizer import build_optimizer
-from model.gpt import Decoder
+from GPT.config import GPTConfig
+from GPT.training.logger import TrainLogger
+from GPT.training.loss import GPTLoss
+from GPT.training.optimizer import build_optimizer
+from GPT.model.gpt import Decoder
 from GPT.tfrecords import get_dataset
 
 config=GPTConfig()
 
 clip_norm=config.grad_clip_norm
 accum_steps=config.accum_steps
+
 logger=TrainLogger()
+loss_fn=GPTLoss()
+
+
 
 @tf.function
 def train_step(model, optimizer, loss_fn,x,clip_norm):
@@ -45,14 +49,14 @@ def train_step(model, optimizer, loss_fn,x,clip_norm):
 
 if __name__=="__main__":
     model=Decoder(config=config)
-    optimizer=build_optimizer(GPTConfig,"SGD")
+    optimizer=build_optimizer(config,"SGD")
     train_files = tf.data.Dataset.list_files(config.train_dir + "/*.tfrecord")
     val_files = tf.data.Dataset.list_files(config.val_dir + "/*.tfrecord")
     train_files = [f.numpy().decode() for f in train_files]
     val_files = [f.numpy().decode() for f in val_files]
 
-    train_ds=get_dataset(train_files,batch_size=config.batch_size)
-    val_ds=get_dataset(val_files,batch_size=config.batch_size)
+    train_ds=get_dataset(train_files,batch_size=config.batch_size,block_size=config.block_size)
+    val_ds=get_dataset(val_files,batch_size=config.batch_size,block_size=config.block_size)
 
 
     for step, batch in enumerate(tqdm.tqdm(train_ds)):

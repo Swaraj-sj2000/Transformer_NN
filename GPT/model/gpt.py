@@ -3,8 +3,8 @@ import tensorflow as tf
 
 from tensorflow.keras import mixed_precision
 
-from layers.embedding import GPTEmbeddings
-from layers.block import DecoderBlock
+from GPT.layers.embedding import GPTEmbeddings
+from GPT.layers.block import DecoderBlock
 
 mixed_precision.set_global_policy("mixed_float16")
 
@@ -15,7 +15,7 @@ class Decoder(tf.keras.layers.Layer):
         self.decoder_layers=[DecoderBlock(config) for _ in range(config.n_layer)]
         self.ln_f = tf.keras.layers.LayerNormalization(epsilon=1e-5)
 
-        self.final_linear=tf.keras.layers.Dense(config.vocab_size,tf.float32)
+        self.final_linear=tf.keras.layers.Dense(config.vocab_size,dtype=tf.float32)
 
     
     def call(self, input_ids):

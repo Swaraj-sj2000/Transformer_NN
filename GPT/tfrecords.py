@@ -5,7 +5,7 @@ import os
 import requests
 import tiktoken
 
-from config import GPTConfig
+from GPT.config import GPTConfig
 
 def shard_tfrecords(
     samples,

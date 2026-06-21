@@ -2,8 +2,8 @@
 
 import tensorflow as tf
 
-from layers.mlp import FFN
-from layers.attention import MultiHeadAttention
+from GPT.layers.mlp import FFN
+from GPT.layers.attention import MultiHeadAttention
 
 class DecoderBlock(tf.keras.layers.Layer):
     def __init__(self,config):
@@ -21,5 +21,4 @@ class DecoderBlock(tf.keras.layers.Layer):
         return self.LN2(Z1+ffn_op)
 
 
-    
     

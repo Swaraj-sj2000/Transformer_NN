@@ -20,3 +20,6 @@ class DecoderBlock(tf.keras.layers.Layer):
         ffn_op=self.MLP(Z1)
         return self.LN2(Z1+ffn_op)
 
+
+    
+    

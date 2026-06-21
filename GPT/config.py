@@ -38,5 +38,14 @@ class GPTConfig(BaseSettings):
     epochs: int = 1
     accum_steps:int=4
 
+    # -----------------------
+    #DIRECTORY
+    # -----------------------
+    train_dir:str="GPT/data/tfrecords/train"
+    val_dir:str="GPT/data/tfrecords/val"
+
+
+
+
     class Config:
         env_prefix = "GPT_"

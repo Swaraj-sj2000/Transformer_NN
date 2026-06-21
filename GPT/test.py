@@ -35,7 +35,7 @@ print(logits.shape)
 
 X=tf.random.uniform((2,16),maxval=config.vocab_size,dtype=tf.int32)
 loss_fn=GPTLoss()
-opt=build_optimizer(config,opt="SGD")
+opt=build_optimizer(config,"Adafactor")
 loss=train_step(model,opt,loss_fn,X)
 
 print(tf.shape(loss))

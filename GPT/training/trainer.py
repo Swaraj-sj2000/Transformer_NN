@@ -1,29 +1,84 @@
 #GPT/training/trainer.py
 
 import tensorflow as tf
+import tqdm
+
 from config import GPTConfig
+from training.logger import TrainLogger
+from training.loss import loss_fn
+from training.optimizer import build_optimizer
+from model.gpt import Decoder
+from GPT.tfrecords import get_dataset
 
 config=GPTConfig()
+
 clip_norm=config.grad_clip_norm
 accum_steps=config.accum_steps
+logger=TrainLogger()
 
 @tf.function
-def train_step(model, optimizer, loss_fn,x):
-    with tf.GradientTape() as tape:
-        print("before model")
-        logits = model(x)
-        print("after model")
-        targets = x[:, 1:]
-        logits = logits[:, :-1, :]
+def train_step(model, optimizer, loss_fn,x,clip_norm):
+    try:
+        with tf.GradientTape() as tape:
+            logits = model(x)
+            targets = x[:, 1:]
+            logits = logits[:, :-1, :]
 
-        loss = loss_fn(logits, targets)
-        print("after loss")
-    print("before gradients")
-    grads = tape.gradient(loss, model.trainable_variables)
-    print("After gradients")
-    grads,_=tf.clip_by_global_norm(grads,clip_norm)
-    print("Before optimizer")
-    optimizer.apply_gradients(zip(grads, model.trainable_variables))
-    print("after optimizer")
+            loss = loss_fn(logits, targets)
+            #loss=tf.reduce_mean(loss)
 
-    return loss
+        grads = tape.gradient(loss, model.trainable_variables)
+        grad_norm=tf.linalg.global_norm(grads)
+
+        grads,_=tf.clip_by_global_norm(grads,clip_norm)
+        optimizer.apply_gradients(zip(grads, model.trainable_variables))
+
+        return loss,grad_norm
+    except Exception as e:
+        logger.log(
+            status="error",
+            error=str(e)
+        )
+        raise
+
+
+
+if __name__=="__main__":
+    model=Decoder(config=config)
+    optimizer=build_optimizer(GPTConfig,"SGD")
+    train_files = tf.data.Dataset.list_files(config.train_dir + "/*.tfrecord")
+    val_files = tf.data.Dataset.list_files(config.val_dir + "/*.tfrecord")
+    train_files = [f.numpy().decode() for f in train_files]
+    val_files = [f.numpy().decode() for f in val_files]
+
+    train_ds=get_dataset(train_files,batch_size=config.batch_size)
+    val_ds=get_dataset(val_files,batch_size=config.batch_size)
+
+
+    for step, batch in enumerate(tqdm.tqdm(train_ds)):
+
+        loss, grad_norm = train_step(
+            model,
+            optimizer,
+            loss_fn,
+            batch,
+            clip_norm
+        )
+
+        if step % 50 == 0:
+            print("Step:", step, "loss:", loss.numpy(), "grad_norm:", grad_norm.numpy())
+
+        if step % 200 == 0:
+            val_loss = 0.0
+            n = 0
+
+            for vbatch in val_ds:
+                logits = model(vbatch)
+                targets = vbatch[:, 1:]
+                logits = logits[:, :-1, :]
+
+                loss = loss_fn(logits, targets)
+                val_loss += tf.reduce_mean(loss)
+                n += 1
+
+            print("VAL LOSS:", (val_loss / n).numpy())

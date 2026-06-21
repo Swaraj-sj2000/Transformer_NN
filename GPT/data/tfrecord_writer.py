@@ -1,5 +1,8 @@
 import tensorflow as tf
 import os
+from GPT.utils.logging import get_logger
+
+logger=get_logger(__name__)
 
 def shard_tfrecords(
     samples,
@@ -9,7 +12,7 @@ def shard_tfrecords(
     prefix_train="train",
     prefix_val="val"
 ):
-    print("Writing TFRecords...")
+    logger.info("Writing TFRecords...")
 
     os.makedirs(config.train_dir, exist_ok=True)
     os.makedirs(config.val_dir,exist_ok=True)
@@ -55,5 +58,5 @@ def shard_tfrecords(
     for w in train_writers + val_writers:
         w.close()
 
-    print("Done writing TFRecords")
+    logger.info("Done writing TFRecords")
 

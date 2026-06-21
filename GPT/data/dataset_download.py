@@ -1,7 +1,9 @@
 import os
 import json
 import requests
+from GPT.utils.logging import get_logger
 
+logger=get_logger(__name__)
 def download_ds(url,output_path):
 
     path = output_path
@@ -11,6 +13,7 @@ def download_ds(url,output_path):
         r.raise_for_status()
         with open(path, "w",encoding='utf-8') as f:
             f.write(r.text)
-        print("Downloaded Shakespeare dataset....")
+        
+        logger.info("Downloading dataset")
 
-    else: print("Dataset already exists...")
+    else: logger.warning("Dataset already exists")

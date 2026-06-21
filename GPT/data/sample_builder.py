@@ -1,5 +1,8 @@
 import tiktoken
 from GPT.data.tokenizer import tokenise
+from GPT.utils.logging import get_logger
+
+logger=get_logger(__name__)
 
 def build_samples(text,block_size):
     tokens=tokenise(text)
@@ -10,8 +13,8 @@ def build_samples(text,block_size):
         chunk=tokens[i:i+block_size]
         samples.append(chunk)
     
-    print("Total samples:", len(samples))
-    print("Train samples:", int(0.8 * len(samples)))
-    print("Val samples:", len(samples) - int(0.8 * len(samples)))
+    logger.info("Total samples:", len(samples))
+    logger.info("Train samples:", int(0.8 * len(samples)))
+    logger.info("Val samples:", len(samples) - int(0.8 * len(samples)))
 
     return samples

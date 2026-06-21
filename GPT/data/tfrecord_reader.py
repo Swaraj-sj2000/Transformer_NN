@@ -1,6 +1,8 @@
 import tensorflow as tf
 import os
+from GPT.utils.logging import get_logger
 
+logger=get_logger(__name__)
 
 def parse_fn(example_proto,block_size):
     feature_description={

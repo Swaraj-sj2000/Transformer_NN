@@ -17,3 +17,5 @@ logs/
 .ipynb_checkpoints/
 *.txt
 *.tfrecord
+*notes*
+*pdf*

@@ -20,6 +20,7 @@ class GPTConfig(BaseSettings):
     dropout: float = Field(default=0.1, ge=0.0, le=1.0)
 
     d_ff: int = Field(default=3072, gt=0)
+    epsilon: float = Field(default=1e-5, gt=0)
 
     # -----------------------
     # Optimizer

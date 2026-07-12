@@ -19,3 +19,4 @@ logs/
 *.tfrecord
 *notes*
 *pdf*
+*notes_common.py

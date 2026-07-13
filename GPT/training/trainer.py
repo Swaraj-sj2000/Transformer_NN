@@ -4,7 +4,6 @@ import tensorflow as tf
 import tqdm
 
 from GPT.config import GPTConfig
-from GPT.training.logger import TrainLogger
 from GPT.training.loss import GPTLoss
 from GPT.training.optimizer import build_optimizer
 from GPT.model.gpt import Decoder

@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local editors and environments
+.vscode/
+.env
+.venv/
+venv/
+tf_env/
+
+# Generated ML artifacts
+checkpoints/
+logs/
+*.h5
+*.ckpt
+*.pb
+*.tfrecord
+
+# Notebook and local data artifacts
+.ipynb_checkpoints/
+*.txt
+*.pdf
+output.txt
+
+# Personal notes and generated note helpers
+*notes*
+*notes_common.py
